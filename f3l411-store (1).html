@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F3L 411 | متجر قيمنق</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red: #C8102E;
+    --maroon: #6E0A17;
+    --cream: #FBF3DD;
+    --ink: #1B1300;
+    --wa: #25D366;
+    --wa-dark: #1DA851;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--red);
+    color: var(--cream);
+    font-family: 'Tajawal', sans-serif;
+    overflow-x:hidden;
+  }
+  .noise{
+    position:fixed; inset:0; pointer-events:none; opacity:.05; z-index:1;
+    background-image: radial-gradient(circle, #000 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+
+  /* ---------- HERO ---------- */
+  header{
+    position:relative;
+    min-height: 92vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding: 6vh 6vw 4vh;
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'Bungee', cursive;
+    font-size: clamp(1rem, 2.4vw, 1.4rem);
+    color: var(--cream);
+    background: var(--maroon);
+    display:inline-block;
+    padding: .5em 1em;
+    transform: rotate(-2deg);
+    align-self:flex-start;
+    margin-bottom: 2rem;
+    letter-spacing: .05em;
+    box-shadow: 6px 6px 0 rgba(0,0,0,.25);
+  }
+  .brand{
+    font-family:'Bungee', cursive;
+    line-height: .92;
+    text-transform:uppercase;
+    color: var(--cream);
+    text-shadow: 5px 5px 0 var(--maroon);
+  }
+  .brand .f3l{ font-size: clamp(4.5rem, 17vw, 11rem); display:block; }
+  .brand .num{
+    font-size: clamp(2.5rem, 9vw, 6rem);
+    display:block;
+    text-align:left;
+    margin-top: .1em;
+    -webkit-text-stroke: 2px var(--cream);
+    -webkit-text-fill-color: var(--red);
+    text-shadow: none;
+  }
+  .tagline{
+    margin-top: 2rem;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 40ch;
+    font-weight: 500;
+    opacity:.95;
+  }
+  .hero-cta{
+    margin-top: 2.5rem;
+    display:inline-flex;
+    align-items:center;
+    gap:.6em;
+    width:fit-content;
+    background: var(--cream);
+    color: var(--ink);
+    font-weight:800;
+    font-size: 1.05rem;
+    padding: .9em 1.6em;
+    border-radius: 100px;
+    text-decoration:none;
+    box-shadow: 0 8px 0 var(--maroon);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .hero-cta:active{ transform: translateY(6px); box-shadow: 0 2px 0 var(--maroon); }
+
+  /* ---------- SECTIONS ---------- */
+  main{ position:relative; z-index:2; }
+  section.cat{
+    padding: 5rem 6vw;
+    border-top: 4px dashed rgba(251,243,221,.25);
+  }
+  .cat-head{
+    display:flex;
+    align-items:baseline;
+    gap: 1rem;
+    margin-bottom: 2.2rem;
+    flex-wrap:wrap;
+  }
+  .cat-head h2{
+    font-family:'Bungee', cursive;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    color: var(--cream);
+  }
+  .cat-head span{
+    font-family:'Bungee', cursive;
+    font-size: .95rem;
+    background: var(--ink);
+    color: var(--cream);
+    padding: .3em .8em;
+    border-radius: 4px;
+    opacity:.85;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+    gap: 1.4rem;
+  }
+  .card{
+    background: var(--cream);
+    color: var(--ink);
+    padding: 1.6rem 1.5rem 1.5rem;
+    position:relative;
+    clip-path: polygon(0% 2%, 3% 0%, 97% 0%, 100% 3%, 100% 97%, 97% 100%, 3% 100%, 0% 98%);
+    display:flex;
+    flex-direction:column;
+    gap: .9rem;
+    transition: transform .2s ease;
+  }
+  .card:hover{ transform: translateY(-6px) rotate(-.6deg); }
+  .card h3{
+    font-size: 1.15rem;
+    font-weight:800;
+    line-height:1.3;
+  }
+  .card .price{
+    font-family:'Bungee', cursive;
+    color: var(--red);
+    font-size: 1.6rem;
+  }
+  .card .price small{
+    font-family:'Tajawal', sans-serif;
+    font-size: .95rem;
+    font-weight:700;
+  }
+  .order-btn{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5em;
+    background: var(--wa);
+    color:#fff;
+    font-weight:800;
+    font-size: .95rem;
+    border:none;
+    padding: .8em 1em;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .order-btn:hover{ background: var(--wa-dark); }
+  .order-btn:active{ transform: scale(.97); }
+  .order-btn svg{ width:18px; height:18px; flex-shrink:0; }
+
+  /* Recharge / generic section */
+  .recharge-card{
+    background: var(--maroon);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 2rem;
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+    align-items:flex-start;
+    max-width: 620px;
+  }
+  .recharge-card h3{ font-family:'Bungee',cursive; font-size:1.3rem; }
+  .recharge-card p{ opacity:.9; line-height:1.7; }
+
+  footer{
+    padding: 3rem 6vw 4rem;
+    text-align:center;
+    border-top: 4px dashed rgba(251,243,221,.25);
+  }
+  footer p{ opacity:.75; font-size:.9rem; }
+  .footer-brand{
+    font-family:'Bungee', cursive;
+    font-size: 1.6rem;
+    margin-bottom:.6rem;
+  }
+
+  /* floating whatsapp */
+  .float-wa{
+    position: fixed;
+    bottom: 22px;
+    left: 22px;
+    z-index: 50;
+    background: var(--wa);
+    color:#fff;
+    width: 58px; height:58px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    text-decoration:none;
+    animation: pulse 2.4s infinite;
+  }
+  .float-wa svg{ width:28px; height:28px; }
+  @keyframes pulse{
+    0%,100%{ box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(37,211,102,.5); }
+    50%{ box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 10px rgba(37,211,102,0); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 640px){
+    .brand .num{ text-align:center; -webkit-text-stroke: 1.5px var(--cream); }
+    header{ min-height: 80vh; }
+  }
+
+  /* ---------- TOPBAR (حساب / نقاط) ---------- */
+  .topbar{
+    position: sticky; top:0; z-index: 40;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:.8rem;
+    padding: .7rem 6vw;
+    background: var(--ink);
+    color: var(--cream);
+    font-size:.9rem;
+    flex-wrap:wrap;
+  }
+  .topbar-brand{ font-family:'Bungee', cursive; font-size:.95rem; opacity:.9; }
+  .topbar-right{ display:flex; align-items:center; gap:.6rem; }
+  .points-badge{
+    display:flex; align-items:center; gap:.4em;
+    background: var(--maroon);
+    padding:.4em .9em;
+    border-radius: 100px;
+    font-weight:800;
+  }
+  .topbar-btn{
+    background: var(--cream);
+    color: var(--ink);
+    border:none;
+    font-weight:800;
+    font-size:.85rem;
+    padding:.5em 1.1em;
+    border-radius:100px;
+    cursor:pointer;
+  }
+  .topbar-btn.ghost{
+    background:transparent;
+    color: var(--cream);
+    border: 1.5px solid rgba(251,243,221,.4);
+  }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:100;
+    background: rgba(0,0,0,.6);
+    display:none;
+    align-items:center; justify-content:center;
+    padding: 5vw;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background: var(--cream);
+    color: var(--ink);
+    width: min(420px, 100%);
+    border-radius: 18px;
+    padding: 1.8rem 1.6rem;
+    position:relative;
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal-close{
+    position:absolute; top:.8rem; left:.8rem;
+    background:none; border:none; font-size:1.4rem;
+    cursor:pointer; color: var(--ink); line-height:1;
+  }
+  .modal-tabs{ display:flex; gap:.5rem; margin-bottom:1.2rem; }
+  .modal-tab{
+    flex:1; text-align:center; padding:.6em; border-radius:10px;
+    font-weight:800; cursor:pointer; background:#eee2c4; border:none;
+    font-family:'Tajawal',sans-serif; font-size:.95rem;
+  }
+  .modal-tab.active{ background: var(--red); color: var(--cream); }
+  .modal-box h2{ font-family:'Bungee',cursive; font-size:1.3rem; margin-bottom:1rem; }
+  .form-field{ margin-bottom: .9rem; display:flex; flex-direction:column; gap:.35rem; }
+  .form-field label{ font-weight:700; font-size:.9rem; }
+  .form-field input{
+    padding:.7em .9em; border-radius:10px; border:2px solid #e2d3a0;
+    font-family:'Tajawal',sans-serif; font-size:1rem; background:#fff;
+  }
+  .form-field input:focus{ outline:none; border-color: var(--red); }
+  .field-hint{ font-size:.78rem; opacity:.7; }
+  .field-hint.ok{ color:#1a7d34; opacity:1; font-weight:700; }
+  .field-hint.bad{ color: var(--red); opacity:1; font-weight:700; }
+  .modal-submit{
+    width:100%; margin-top:.4rem;
+    background: var(--red); color: var(--cream);
+    border:none; font-weight:800; font-size:1rem;
+    padding:.8em; border-radius:12px; cursor:pointer;
+  }
+  .modal-error{ color: var(--red); font-weight:700; font-size:.85rem; margin-top:.5rem; min-height:1.2em; }
+  .modal-note{ font-size:.78rem; opacity:.65; margin-top:1rem; line-height:1.6; }
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed; bottom:22px; right:22px; z-index:110;
+    background: var(--ink); color: var(--cream);
+    padding:.9em 1.3em; border-radius:12px;
+    font-weight:700; font-size:.9rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    transform: translateY(20px); opacity:0; pointer-events:none;
+    transition: all .25s ease;
+  }
+  .toast.show{ transform:translateY(0); opacity:1; }
+
+  /* ---------- REVIEWS ---------- */
+  .rating-summary{
+    display:flex; align-items:center; gap:1rem; margin-bottom:1.8rem; flex-wrap:wrap;
+  }
+  .rating-score{ font-family:'Bungee',cursive; font-size:2.2rem; }
+  .stars{ color:#FFC531; font-size:1.2rem; letter-spacing:.1em; }
+  .stars.small{ font-size:1rem; }
+  .review-form{
+    background: var(--cream); color: var(--ink);
+    border-radius:16px; padding:1.5rem; max-width:620px; margin-bottom:2rem;
+  }
+  .review-form textarea{
+    width:100%; padding:.7em .9em; border-radius:10px; border:2px solid #e2d3a0;
+    font-family:'Tajawal',sans-serif; font-size:1rem; resize:vertical; min-height:80px; margin-top:.6rem;
+  }
+  .star-picker{ display:flex; gap:.3em; font-size:1.6rem; cursor:pointer; color:#ccc; }
+  .star-picker span.active{ color:#FFC531; }
+  .review-list{ display:flex; flex-direction:column; gap:1rem; max-width:680px; }
+  .review-card{
+    background: rgba(251,243,221,.08);
+    border: 1px solid rgba(251,243,221,.2);
+    border-radius:14px; padding:1.1rem 1.3rem;
+  }
+  .review-card .rh{ display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem; flex-wrap:wrap; gap:.4rem;}
+  .review-card .rname{ font-weight:800; }
+  .review-card .rdate{ font-size:.75rem; opacity:.6; }
+  .review-empty{ opacity:.75; font-size:.9rem; }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="topbar">
+  <span class="topbar-brand">F3L 411</span>
+  <div class="topbar-right" id="topbarRight">
+    <!-- يتم تعبئته بالجافاسكربت -->
+  </div>
+</div>
+
+<header>
+  <span class="eyebrow">SHOP · قيمنق</span>
+  <h1 class="brand"><span class="f3l">F3L</span><span class="num">411</span></h1>
+  <p class="tagline">عملات، مركبات، حسابات وشحنات لعوالم Roblox المفضّلة عندك — تطلب وتستلم على واتساب.</p>
+  <a class="hero-cta" href="#كتالوج">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    شوف المنتجات
+  </a>
+</header>
+
+<main id="كتالوج">
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>عالم المملكة</h2>
+      <span>Kingdom World</span>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <h3>كيا فور 🚗</h3>
+        <div class="price">49 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('كيا فور — عالم المملكة','49')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+
+      <div class="card">
+        <h3>سيارة عالم الإمارات 🚙</h3>
+        <div class="price">10 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('سيارة عالم الإمارات — عالم المملكة','10')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+
+      <div class="card">
+        <h3>شاحنة معدلة 🚚</h3>
+        <div class="price">29 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('شاحنة معدلة — عالم المملكة','29')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>قسم شريطي</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>مليون ريال 💰</h3>
+        <div class="price">19 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('مليون ريال — قسم شريطي','19')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>قسم سان دييغو</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>100,000 ريال 💵</h3>
+        <div class="price">9 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('100,000 ريال — قسم سان دييغو','9')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+      <div class="card">
+        <h3>مليون ريال 💰</h3>
+        <div class="price">89 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('مليون ريال — قسم سان دييغو','89')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>عالم روكت</h2>
+      <span>Rocket World</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>سيارة فينك 🏎️</h3>
+        <div class="price">25 <small>ريال</small></div>
+        <button class="order-btn" onclick="orderNow('سيارة فينك — عالم روكت','25')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+          اطلب واتساب
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>شحنات</h2>
+      <span>Top-ups</span>
+    </div>
+    <div class="recharge-card">
+      <h3>ما لقيت اللي تبيه؟</h3>
+      <p>راسلنا على واتساب وحدد اللعبة والمبلغ اللي تبي تشحنه، ونرد عليك بالسعر وطريقة التسليم فورًا.</p>
+      <button class="order-btn" style="width:fit-content; padding-inline:1.6em;" onclick="orderNow('شحن مخصص — يرجى تحديد اللعبة والمبلغ','—')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+        كلمنا واتساب
+      </button>
+    </div>
+  </section>
+
+  <section class="cat">
+    <div class="cat-head">
+      <h2>تقييمات العملاء</h2>
+      <span>Reviews</span>
+    </div>
+
+    <div class="rating-summary">
+      <div class="rating-score" id="avgScore">—</div>
+      <div>
+        <div class="stars" id="avgStars">☆☆☆☆☆</div>
+        <div style="font-size:.85rem; opacity:.75;" id="reviewCount">لا توجد تقييمات بعد</div>
+      </div>
+    </div>
+
+    <div class="review-form">
+      <h3 style="font-family:'Bungee',cursive; font-size:1.05rem; margin-bottom:.6rem;">شاركنا رأيك</h3>
+      <div class="star-picker" id="starPicker">
+        <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+      </div>
+      <textarea id="reviewText" placeholder="اكتب تجربتك مع المتجر..."></textarea>
+      <button class="order-btn" style="background:var(--red); margin-top:.8rem;" onclick="submitReview()">
+        إرسال التقييم
+      </button>
+      <div class="modal-error" id="reviewError" style="color:var(--maroon);"></div>
+    </div>
+
+    <div class="review-list" id="reviewList"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">F3L 411</div>
+  <p>الطلب والتسليم يتم بالكامل عبر واتساب — الأسعار بالريال السعودي.</p>
+  <p style="margin-top:.8rem; opacity:.55; font-size:.8rem;">تم صنع هذا الموقع من قبل Faisal Alhajri</p>
+</footer>
+
+<a class="float-wa" id="floatWa" href="#" target="_blank" rel="noopener" aria-label="تواصل واتساب">
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.19-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.1-.87-.28-1.5-.55-2.63-1.14-4.35-3.8-4.48-3.98-.13-.18-1.07-1.42-1.07-2.7 0-1.29.68-1.92.92-2.18.24-.26.53-.32.7-.32.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.28.02.46-.09.18-.13.29-.26.44-.13.16-.28.36-.4.48-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.87 1.03.93 1.9 1.22 2.17 1.36.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.5.31.07.11.07.63-.15 1.25z"/></svg>
+</a>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">دخول</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">حساب جديد</button>
+    </div>
+
+    <!-- تسجيل الدخول -->
+    <div id="paneLogin">
+      <h2>تسجيل الدخول</h2>
+      <div class="form-field">
+        <label>رقم الجوال</label>
+        <input type="tel" id="loginPhone" placeholder="05xxxxxxxx" dir="ltr">
+      </div>
+      <div class="form-field">
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPassword">
+      </div>
+      <button class="modal-submit" onclick="doLogin()">دخول</button>
+      <div class="modal-error" id="loginError"></div>
+    </div>
+
+    <!-- تسجيل حساب جديد -->
+    <div id="paneRegister" style="display:none;">
+      <h2>إنشاء حساب</h2>
+      <div class="form-field">
+        <label>الاسم</label>
+        <input type="text" id="regName" placeholder="اسمك">
+      </div>
+      <div class="form-field">
+        <label>رقم الجوال</label>
+        <input type="tel" id="regPhone" placeholder="05xxxxxxxx" dir="ltr" oninput="checkPhoneFormat()">
+        <div class="field-hint" id="phoneHint">مثال: 0512345678 أو 966512345678+</div>
+      </div>
+      <div class="form-field">
+        <label>كلمة المرور</label>
+        <input type="password" id="regPassword" placeholder="6 أحرف على الأقل">
+      </div>
+      <button class="modal-submit" onclick="doRegister()">إنشاء الحساب</button>
+      <div class="modal-error" id="registerError"></div>
+      <div class="modal-note">
+        تسجيل الدخول هنا محلي داخل متصفحك فقط (لا يوجد سيرفر خارجي) — بياناتك تُحفظ على جهازك، وتحقق الجوال هو تحقق من صيغة الرقم فقط وليس رمز تحقق SMS فعلي.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const WA_NUMBER = "966534748491";
+
+  function orderNow(productName, price){
+    const priceText = price === "—" ? "" : ` (${price} ريال)`;
+    const msg = `مرحباً F3L 411 👋\nأبي أطلب: ${productName}${priceText}`;
+    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+
+    // إضافة نقاط لو المستخدم مسجل دخول
+    const user = getCurrentUser();
+    if(user){
+      const num = parseInt(String(price).replace(/[^\d]/g,''), 10);
+      const earned = isNaN(num) ? 5 : Math.max(1, Math.round(num));
+      addPoints(user.phone, earned);
+      showToast(`تم تسجيل طلبك! +${earned} نقطة 🎉`);
+    } else {
+      showToast('سجّل دخولك عشان تجمع نقاط مع كل طلب 🎮');
+    }
+  }
+
+  document.getElementById('floatWa').href =
+    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('مرحباً F3L 411، عندي استفسار عن المتجر')}`;
+
+  /* ================= نظام تسجيل الدخول + النقاط (محلي بالمتصفح) ================= */
+
+  function loadUsers(){
+    try{ return JSON.parse(localStorage.getItem('f3l_users') || '{}'); }
+    catch(e){ return {}; }
+  }
+  function saveUsers(users){ localStorage.setItem('f3l_users', JSON.stringify(users)); }
+
+  function getCurrentUser(){
+    const phone = localStorage.getItem('f3l_currentUser');
+    if(!phone) return null;
+    const users = loadUsers();
+    return users[phone] ? { ...users[phone], phone } : null;
+  }
+
+  function normalizePhone(v){
+    return v.replace(/[\s-]/g,'');
+  }
+
+  // تحقق من صيغة رقم سعودي (شكلي فقط — ليس رمز SMS حقيقي)
+  function isValidSaudiPhone(v){
+    const clean = normalizePhone(v);
+    return /^(05\d{8}|9665\d{8}|\+9665\d{8})$/.test(clean);
+  }
+
+  function checkPhoneFormat(){
+    const val = document.getElementById('regPhone').value;
+    const hint = document.getElementById('phoneHint');
+    if(!val){
+      hint.textContent = 'مثال: 0512345678 أو 966512345678+';
+      hint.className = 'field-hint';
+      return;
+    }
+    if(isValidSaudiPhone(val)){
+      hint.textContent = '✓ صيغة الرقم صحيحة';
+      hint.className = 'field-hint ok';
+    } else {
+      hint.textContent = '✕ صيغة الرقم غير صحيحة (يبدأ بـ 05 أو +9665)';
+      hint.className = 'field-hint bad';
+    }
+  }
+
+  function simpleHash(str){
+    // ملاحظة: هذا ليس تشفير حقيقي، فقط تمويه بسيط لأن كل شي يشتغل بالمتصفح بدون سيرفر
+    let h = 0;
+    for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) | 0; }
+    return String(h);
+  }
+
+  function switchTab(tab){
+    document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+    document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+    document.getElementById('paneLogin').style.display = tab==='login' ? 'block':'none';
+    document.getElementById('paneRegister').style.display = tab==='register' ? 'block':'none';
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('registerError').textContent = '';
+  }
+
+  function openAuth(tab){
+    document.getElementById('authModal').classList.add('open');
+    switchTab(tab || 'login');
+  }
+  function closeAuth(){
+    document.getElementById('authModal').classList.remove('open');
+  }
+
+  function doRegister(){
+    const name = document.getElementById('regName').value.trim();
+    const phoneRaw = document.getElementById('regPhone').value.trim();
+    const pass = document.getElementById('regPassword').value;
+    const err = document.getElementById('registerError');
+    err.textContent = '';
+
+    if(!name){ err.textContent = 'اكتب اسمك'; return; }
+    if(!isValidSaudiPhone(phoneRaw)){ err.textContent = 'رقم الجوال غير صحيح'; return; }
+    if(pass.length < 6){ err.textContent = 'كلمة المرور 6 أحرف على الأقل'; return; }
+
+    const phone = normalizePhone(phoneRaw);
+    const users = loadUsers();
+    if(users[phone]){ err.textContent = 'هذا الرقم مسجّل مسبقًا، جرّب تسجيل الدخول'; return; }
+
+    users[phone] = { name, passwordHash: simpleHash(pass), points: 0, joined: Date.now() };
+    saveUsers(users);
+    localStorage.setItem('f3l_currentUser', phone);
+    closeAuth();
+    renderTopbar();
+    showToast(`أهلاً ${name}! تم إنشاء حسابك 🎉`);
+  }
+
+  function doLogin(){
+    const phoneRaw = document.getElementById('loginPhone').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    const err = document.getElementById('loginError');
+    err.textContent = '';
+
+    const phone = normalizePhone(phoneRaw);
+    const users = loadUsers();
+    const u = users[phone];
+    if(!u || u.passwordHash !== simpleHash(pass)){
+      err.textContent = 'رقم الجوال أو كلمة المرور غير صحيحة';
+      return;
+    }
+    localStorage.setItem('f3l_currentUser', phone);
+    closeAuth();
+    renderTopbar();
+    showToast(`أهلاً بعودتك ${u.name}! 👋`);
+  }
+
+  function doLogout(){
+    localStorage.removeItem('f3l_currentUser');
+    renderTopbar();
+    showToast('تم تسجيل الخروج');
+  }
+
+  function addPoints(phone, amount){
+    const users = loadUsers();
+    if(!users[phone]) return;
+    users[phone].points = (users[phone].points || 0) + amount;
+    saveUsers(users);
+    renderTopbar();
+  }
+
+  function renderTopbar(){
+    const el = document.getElementById('topbarRight');
+    const user = getCurrentUser();
+    if(user){
+      el.innerHTML = `
+        <span class="points-badge">⭐ ${user.points} نقطة</span>
+        <span style="opacity:.85;">أهلاً، ${user.name.split(' ')[0]}</span>
+        <button class="topbar-btn ghost" onclick="doLogout()">خروج</button>
+      `;
+    } else {
+      el.innerHTML = `
+        <button class="topbar-btn" onclick="openAuth('login')">تسجيل الدخول</button>
+        <button class="topbar-btn ghost" onclick="openAuth('register')">حساب جديد</button>
+      `;
+    }
+  }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(()=> t.classList.remove('show'), 3200);
+  }
+
+  /* ================= نظام التقييمات (حقيقي — من عملاء فعليين) ================= */
+
+  let selectedStars = 0;
+
+  document.getElementById('starPicker').addEventListener('click', (e)=>{
+    const span = e.target.closest('span[data-v]');
+    if(!span) return;
+    selectedStars = parseInt(span.dataset.v, 10);
+    renderStarPicker();
+  });
+
+  function renderStarPicker(){
+    document.querySelectorAll('#starPicker span').forEach(s=>{
+      s.classList.toggle('active', parseInt(s.dataset.v,10) <= selectedStars);
+    });
+  }
+
+  function loadReviews(){
+    try{ return JSON.parse(localStorage.getItem('f3l_reviews') || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveReviews(list){ localStorage.setItem('f3l_reviews', JSON.stringify(list)); }
+
+  function submitReview(){
+    const err = document.getElementById('reviewError');
+    err.textContent = '';
+    const user = getCurrentUser();
+    if(!user){
+      err.textContent = 'سجّل دخولك عشان تقدر تقيّم';
+      openAuth('login');
+      return;
+    }
+    if(selectedStars === 0){ err.textContent = 'اختر عدد النجوم'; return; }
+    const text = document.getElementById('reviewText').value.trim();
+    if(!text){ err.textContent = 'اكتب تعليقك'; return; }
+
+    const reviews = loadReviews();
+    reviews.unshift({
+      name: user.name,
+      rating: selectedStars,
+      comment: text,
+      date: Date.now()
+    });
+    saveReviews(reviews);
+
+    selectedStars = 0;
+    renderStarPicker();
+    document.getElementById('reviewText').value = '';
+    renderReviews();
+    showToast('شكرًا لتقييمك! ⭐');
+  }
+
+  function renderReviews(){
+    const reviews = loadReviews();
+    const list = document.getElementById('reviewList');
+
+    if(reviews.length === 0){
+      list.innerHTML = '<div class="review-empty">لا توجد تقييمات بعد — كن أول من يقيّم المتجر!</div>';
+      document.getElementById('avgScore').textContent = '—';
+      document.getElementById('avgStars').textContent = '☆☆☆☆☆';
+      document.getElementById('reviewCount').textContent = 'لا توجد تقييمات بعد';
+      return;
+    }
+
+    const avg = reviews.reduce((s,r)=> s + r.rating, 0) / reviews.length;
+    document.getElementById('avgScore').textContent = avg.toFixed(1);
+    document.getElementById('avgStars').textContent = starString(Math.round(avg));
+    document.getElementById('reviewCount').textContent = `بناءً على ${reviews.length} تقييم`;
+
+    list.innerHTML = reviews.map(r => `
+      <div class="review-card">
+        <div class="rh">
+          <span class="rname">${escapeHtml(r.name)}</span>
+          <span class="rdate">${new Date(r.date).toLocaleDateString('ar-SA')}</span>
+        </div>
+        <div class="stars small">${starString(r.rating)}</div>
+        <p style="margin-top:.5rem; line-height:1.6;">${escapeHtml(r.comment)}</p>
+      </div>
+    `).join('');
+  }
+
+  function starString(n){
+    return '★★★★★☆☆☆☆☆'.slice(5-n, 10-n);
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  /* ================= تشغيل أولي ================= */
+  renderTopbar();
+  renderReviews();
+</script>
+
+</body>
+</html>
