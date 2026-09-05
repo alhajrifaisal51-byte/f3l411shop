@@ -1576,30 +1576,84 @@
     noResultsBox.style.display = (q && totalVisible === 0) ? '' : 'none';
   }
 
+  /* ================= طبقة تخزين موحّدة (تخزين حقيقي دائم لو متوفر + احتياطي محلي) ================= */
+  // لو الصفحة مفتوحة كـ Artifact جوا كلود: نستخدم window.storage (تخزين حقيقي دائم
+  // ومشترك بين كل الزوار). أول مرة نقرأ أي مفتاح، لو ما فيه شي بـwindow.storage
+  // بس فيه بيانات قديمة محفوظة بـlocalStorage (من قبل ما نضيف window.storage) —
+  // ننقلها تلقائيًا لـwindow.storage عشان ما تضيع ولا تظهر وكأنها "انحذفت".
+  async function storageGet(key, shared){
+    if(window.storage){
+      try{
+        const r = await window.storage.get(key, shared);
+        if(r && r.value !== null && r.value !== undefined) return r.value;
+        // ما فيه شي بالتخزين الجديد — نتأكد من التخزين المحلي القديم قبل ما نرجع فاضي
+        const legacy = localStorage.getItem(key);
+        if(legacy !== null){
+          await window.storage.set(key, legacy, shared); // ننقل البيانات القديمة
+          return legacy;
+        }
+        return null;
+      }
+      catch(e){
+        // فشل الاتصال بالتخزين الحقيقي — نرجع للمحلي بدل ما نرجع فاضي
+        return localStorage.getItem(key);
+      }
+    }
+    return localStorage.getItem(key);
+  }
+  async function storageSet(key, value, shared){
+    // نكتب بالاثنين دائمًا (نسخة احتياطية محلية) عشان لو صار أي عطل بالتخزين
+    // الحقيقي، البيانات تضل موجودة بالمتصفح ولا تضيع.
+    localStorage.setItem(key, value);
+    if(window.storage){
+      try{ return await window.storage.set(key, value, shared); }
+      catch(e){ return null; }
+    }
+    return true;
+  }
+
+  // أداة استرجاع يدوية: تاخذ البيانات القديمة الموجودة بـlocalStorage بهالمتصفح
+  // بالذات وتفرضها على التخزين الحقيقي المشترك، حتى لو فيه بيانات ثانية موجودة
+  // هناك حاليًا. تُستخدم مرة وحدة من نفس الجهاز اللي فيه البيانات الحقيقية القديمة.
+  // طريقة الاستخدام: افتح أدوات المطوّر بالمتصفح (F12) → تبويب Console →
+  // اكتب: forceRestoreLegacyData() → اضغط Enter.
+  window.forceRestoreLegacyData = async function(){
+    const keys = ['f3l_reviews', 'f3l_trades', 'f3l_users'];
+    let restored = [];
+    for(const key of keys){
+      const legacy = localStorage.getItem(key);
+      if(legacy !== null){
+        if(window.storage){
+          await window.storage.set(key, legacy, key !== 'f3l_users');
+        }
+        restored.push(key);
+      }
+    }
+    if(restored.length){
+      alert('تم استرجاع: ' + restored.join(', ') + ' — أعد تحميل الصفحة الحين');
+    } else {
+      alert('ما لقيت أي بيانات قديمة بهالمتصفح لاسترجاعها');
+    }
+    return restored;
+  };
+
   /* ================= نظام التريدات (لوحة عامة + واتساب) ================= */
 
-  // ملاحظة تقنية: اللوحة تُخزَّن محليًا بالمتصفح (localStorage) مثل باقي بيانات
-  // الموقع (الحسابات والتقييمات). يعني كل جهاز/متصفح يشوف التريدات اللي انضافت
-  // منه هو + التريدات التجريبية المبدئية، وليست متزامنة فعليًا بين كل الزوار —
-  // هذا يحتاج قاعدة بيانات فعلية على سيرفر لو تبي مزامنة حقيقية بين الكل.
+  // اللوحة تُخزَّن بتخزين حقيقي مشترك بين كل الزوار (لو الصفحة تفتح كـ Artifact
+  // جوا كلود) عشان أي تريد يضيفه أي زائر يبقى محفوظ ويظهر للجميع دائمًا.
 
-  function loadTrades(){
+  async function loadTrades(){
     try{
-      // تفريغ لمرة واحدة لأي طلبات تريد قديمة/تجريبية كانت مخزّنة بالمتصفح
-      if(!localStorage.getItem('f3l_trades_cleared_v2')){
-        localStorage.removeItem('f3l_trades');
-        localStorage.setItem('f3l_trades_cleared_v2', '1');
-      }
-      const raw = localStorage.getItem('f3l_trades');
+      const raw = await storageGet('f3l_trades', true);
       if(raw === null){
-        saveTrades([]);
+        await saveTrades([]);
         return [];
       }
       return JSON.parse(raw || '[]');
     }
     catch(e){ return []; }
   }
-  function saveTrades(list){ localStorage.setItem('f3l_trades', JSON.stringify(list)); }
+  async function saveTrades(list){ await storageSet('f3l_trades', JSON.stringify(list), true); }
 
   // يحول رقم الجوال إلى صيغة رابط واتساب (wa.me) صالحة
   function tradePhoneToWaLink(phone){
@@ -1610,10 +1664,10 @@
     return digits;
   }
 
-  function renderTradeBoard(){
+  async function renderTradeBoard(){
     const box = document.getElementById('tradeBoard');
     if(!box) return; // القسم غير موجود بهالصفحة
-    const trades = loadTrades();
+    const trades = await loadTrades();
 
     if(trades.length === 0){
       box.innerHTML = '<div class="trade-empty">ما فيه طلبات تريد لين الحين — كن أول وحد يضيف طلب!</div>';
@@ -1666,7 +1720,7 @@
     }
   }
 
-  function submitTrade(){
+  async function submitTrade(){
     const err = document.getElementById('tradeError');
     err.textContent = '';
 
@@ -1683,6 +1737,16 @@
     if(!want){ err.textContent = 'اكتب وش تبي بالمقابل'; return; }
     if(!phone){ err.textContent = 'اكتب رقم الواتساب عشان يتواصلون معك'; return; }
 
+    // إضافة الطلب للوحة التريدات العامة أولًا (قبل الانتقال لواتساب) عشان يضمن الحفظ
+    const trades = await loadTrades();
+    trades.unshift({
+      name: user.name.split(' ')[0],
+      game, have, want, phone, notes,
+      date: Date.now()
+    });
+    await saveTrades(trades);
+    await renderTradeBoard();
+
     let msg = `مرحباً F3L 411 👋\nعندي طلب تريد:\n`;
     msg += `اللعبة: ${game}\n`;
     msg += `عندي: ${have}\n`;
@@ -1692,16 +1756,6 @@
 
     const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
     location.href = url;
-
-    // إضافة الطلب للوحة التريدات العامة
-    const trades = loadTrades();
-    trades.unshift({
-      name: user.name.split(' ')[0],
-      game, have, want, phone, notes,
-      date: Date.now()
-    });
-    saveTrades(trades);
-    renderTradeBoard();
 
     document.getElementById('tradeHave').value = '';
     document.getElementById('tradeWant').value = '';
@@ -1972,34 +2026,20 @@
     { name: "محمد سعد", rating: 5, comment: "جربت الخدمة أكثر من مرة، وكل مرة الأمور تمام وسلسة. رايفلز وبلوكس فروت يستاهلون، وتعاملهم يعطيك ثقة", date: Date.now() }
   ];
 
-  function loadReviews(){
+  async function loadReviews(){
     try{
-      // نتأكد إن تقييم عبدالله القويفل موجود بـ5 نجوم — نضيفه لو انحذف قبل كذا، أو نصحح تقييمه لو موجود
-      if(!localStorage.getItem('f3l_reviews_fix_v3')){
-        const rawOld = localStorage.getItem('f3l_reviews');
-        let listOld = [];
-        try{ listOld = rawOld ? (JSON.parse(rawOld) || []) : []; } catch(e){ listOld = []; }
-        const existing = listOld.find(r => r.name === 'عبدالله القويفل');
-        if(existing){
-          existing.rating = 5;
-        } else {
-          listOld.unshift({ name: "عبدالله القويفل", rating: 5, comment: "حلو والله، فيه كل شي وأموره سهالات 👌", date: Date.now() });
-        }
-        saveReviews(listOld);
-        localStorage.setItem('f3l_reviews_fix_v3', '1');
-      }
-      const raw = localStorage.getItem('f3l_reviews');
+      const raw = await storageGet('f3l_reviews', true);
       if(raw === null){
-        saveReviews(demoReviews);
+        await saveReviews(demoReviews);
         return demoReviews;
       }
       return JSON.parse(raw || '[]');
     }
     catch(e){ return []; }
   }
-  function saveReviews(list){ localStorage.setItem('f3l_reviews', JSON.stringify(list)); }
+  async function saveReviews(list){ await storageSet('f3l_reviews', JSON.stringify(list), true); }
 
-  function submitReview(){
+  async function submitReview(){
     const err = document.getElementById('reviewError');
     err.textContent = '';
     const user = getCurrentUser();
@@ -2012,24 +2052,24 @@
     const text = document.getElementById('reviewText').value.trim();
     if(!text){ err.textContent = 'اكتب تعليقك'; return; }
 
-    const reviews = loadReviews();
+    const reviews = await loadReviews();
     reviews.unshift({
       name: user.name,
       rating: selectedStars,
       comment: text,
       date: Date.now()
     });
-    saveReviews(reviews);
+    await saveReviews(reviews);
 
     selectedStars = 0;
     renderStarPicker();
     document.getElementById('reviewText').value = '';
-    renderReviews();
+    await renderReviews();
     showToast('شكرًا لتقييمك! ⭐');
   }
 
-  function renderReviews(){
-    const reviews = loadReviews();
+  async function renderReviews(){
+    const reviews = await loadReviews();
     const list = document.getElementById('reviewList');
 
     if(reviews.length === 0){
